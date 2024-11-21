@@ -74,7 +74,7 @@ def faceid(request: HttpRequest):
     if employee:
         employee = employee.first()
         print(now)
-        if (now.hour - 5) < 12:
+        if (now.hour) < 12:
             control = AccessControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
             if control:
                 return Response({
@@ -96,7 +96,10 @@ def faceid(request: HttpRequest):
                 )
                 print(result)
                 if result.get("verified"):
-                    control.status = "arrived"
+                    if now.hour > 9:
+                        control.status = "late"
+                    else:
+                        control.status = "arrived"
                     control.save()
                 else:
                     control.status = "failed"
