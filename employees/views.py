@@ -97,6 +97,7 @@ def edit_employee_view(request: HttpRequest, uuid: str):
     employee_obj = employee_obj.first()
     employee = CreateEmployeeModelSerializer(employee_obj, data=data)
     if employee.is_valid():
+        print(employee.validated_data)
         e = employee.save()
         if ";base64," in image:
             format, imgstr = image.split(';base64,')
