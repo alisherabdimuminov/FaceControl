@@ -6,6 +6,8 @@ from rest_framework.response import Response
 from rest_framework import decorators
 from rest_framework import permissions
 from django.core.files.base import ContentFile
+from django.db.models import Q
+from django.db.models.functions import ExtractMonth, ExtractDay
 
 from users.models import History
 from .models import (
@@ -49,9 +51,24 @@ def employees_view(request: HttpRequest):
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def employees_birth_date_view(request: HttpRequest):
     now = datetime.now()
-    tomorrow = now + timedelta(days=1)
-    after_tomorrow = now + timedelta(days=5)
-    employees_obj = Employee.objects.filter(active=True, birth_date__range=[now.strftime("%Y-%m-%d"), after_tomorrow.strftime("%Y-%m-%d")]).order_by("birth_date")
+    # Current date
+    current_date = now().date()
+    start_day = current_date.day
+    start_month = current_date.month
+
+    # End date (5 days from now)
+    end_date = current_date + timedelta(days=5)
+    end_day = end_date.day
+    end_month = end_date.month
+
+    employees_obj = Employee.objects.annotate(
+        day=ExtractDay("birth_date"),
+        month=ExtractMonth("birth_date")
+    ).filter(
+        Q(month=start_month, day__gte=start_day) |
+        Q(month=end_month, day__lte=end_day),
+        active=True
+    ).order_by("birth_date")
     employees = EmployeeModelSerializer(employees_obj, many=True)
     print(employees_obj)
     return Response({
