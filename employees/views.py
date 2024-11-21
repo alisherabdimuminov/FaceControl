@@ -85,6 +85,7 @@ def employee_view(request: HttpRequest, uuid: str):
 def edit_employee_view(request: HttpRequest, uuid: str):
     data = request.data.dict()
     image = data.pop("image")
+    print(data)
 
     employee_obj = Employee.objects.filter(uuid=uuid)
     if not employee_obj:
