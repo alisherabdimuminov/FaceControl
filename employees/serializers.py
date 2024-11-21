@@ -64,6 +64,9 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
         day = request.GET.get("day")
         month = request.GET.get("month")
         year = request.GET.get("year")
+        print(day)
+        print(month)
+        print(year)
         access_control = AccessControl.objects.filter(employee_id=obj.pk, created__day=day, created__month=month, created__year=year)
         print(access_control)
         if access_control:
