@@ -52,7 +52,7 @@ def employees_view(request: HttpRequest):
 def employees_birth_date_view(request: HttpRequest):
     now = datetime.now()
     # Current date
-    current_date = now().date()
+    current_date = now.date()
     start_day = current_date.day
     start_month = current_date.month
 
