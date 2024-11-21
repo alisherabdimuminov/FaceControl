@@ -29,7 +29,7 @@ class EmployeeModelSerializer(serializers.ModelSerializer):
 
 
 class CreateEmployeeModelSerializer(serializers.ModelSerializer):
-    birth_date = serializers.DateField(format="%d-%m-%Y")
+    # birth_date = serializers.DateField(format="%d-%m-%Y")
     class Meta:
         model = Employee
         fields = ("uuid", "handle", "full_name", "department", "position", "gender", "working_time", "birth_date", "image", "country", "city", "town", "address", "phone", )
