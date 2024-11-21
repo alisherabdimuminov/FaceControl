@@ -15,7 +15,7 @@ from .models import (
 class DepartmentModelSerializer(serializers.ModelSerializer):
     employees = serializers.SerializerMethodField("count_employees")
     def count_employees(self, obj):
-        return Employee.objects.filter(department=obj.pk).count()
+        return Employee.objects.filter(department=obj.pk, active=True).count()
     class Meta:
         model = Department
         fields = ("id", "name", "active", "employees", )
@@ -29,6 +29,7 @@ class EmployeeModelSerializer(serializers.ModelSerializer):
 
 
 class CreateEmployeeModelSerializer(serializers.ModelSerializer):
+    birth_date = serializers.DateField(format="%d-%m-%Y")
     class Meta:
         model = Employee
         fields = ("uuid", "handle", "full_name", "department", "position", "gender", "working_time", "birth_date", "image", "country", "city", "town", "address", "phone", )
