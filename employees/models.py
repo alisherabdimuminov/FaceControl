@@ -51,8 +51,8 @@ class Employee(models.Model):
     full_name = models.CharField(max_length=1000)
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     position = models.CharField(max_length=1000)
-    gender = models.CharField(max_length=10, choices=GENDER)
-    working_time = models.CharField(max_length=10)
+    gender = models.CharField(max_length=100, choices=GENDER)
+    working_time = models.CharField(max_length=110)
     birth_date = models.DateField(max_length=100, null=True, blank=True)
     image = models.ImageField(upload_to="images/employees", null=True, blank=True)
 
@@ -60,7 +60,7 @@ class Employee(models.Model):
     city = models.CharField(max_length=100, null=True, blank=True)
     town = models.CharField(max_length=100, null=True, blank=True)
     address = models.CharField(max_length=100, null=True, blank=True)
-    phone = models.CharField(max_length=20, null=True, blank=True)
+    phone = models.CharField(max_length=200, null=True, blank=True)
 
     active = models.BooleanField(default=True)
 
@@ -75,8 +75,8 @@ class AccessControl(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=ACCESS_STATUS)
-    latitude = models.CharField(max_length=20)
-    longitude = models.CharField(max_length=20)
+    latitude = models.CharField(max_length=200)
+    longitude = models.CharField(max_length=200)
     image = models.ImageField()
 
     active = models.BooleanField(default=True)
