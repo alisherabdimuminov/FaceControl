@@ -1,3 +1,9 @@
 from django.contrib import admin
 
-# Register your models here.
+
+from .models import History
+
+
+@admin.register(History)
+class HistoryModelAdmin(admin.ModelAdmin):
+    list_display = ["user", "model", "comment"]

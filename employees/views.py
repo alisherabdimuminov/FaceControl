@@ -79,6 +79,7 @@ def employee_view(request: HttpRequest, uuid: str):
         "data": employee.data
     })
 
+
 @decorators.api_view(http_method_names=["POST"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def edit_employee_view(request: HttpRequest, uuid: str):
