@@ -59,7 +59,7 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
     def attendance_access_func(self, obj):
         print(self.context)
         request = self.context.get("request")
-        print(request)
+        print(obj)
         day = request.GET.get("day")
         month = request.GET.get("month")
         year = request.GET.get("year")
