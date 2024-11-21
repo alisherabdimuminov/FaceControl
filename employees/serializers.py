@@ -60,6 +60,7 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
         print(self.context)
         request = self.context.get("request")
         print(obj)
+        print(AccessControl.objects.all())
         day = request.GET.get("day")
         month = request.GET.get("month")
         year = request.GET.get("year")
