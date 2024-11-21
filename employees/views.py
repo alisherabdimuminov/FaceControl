@@ -107,6 +107,7 @@ def edit_employee_view(request: HttpRequest, uuid: str):
             model="Employee",
             comment=f"{e.full_name} tahrirlandi"
         )
+    print(employee.errors)
     return Response({
         "status": "success",
         "code": "200",
