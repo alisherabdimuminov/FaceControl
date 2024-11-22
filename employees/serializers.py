@@ -58,18 +58,11 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
     attendance_output_time = serializers.SerializerMethodField("attendance_output_time_func")
 
     def attendance_access_func(self, obj):
-        print(self.context)
         request = self.context.get("request")
-        print(obj)
-        print(AccessControl.objects.all())
         day = request.GET.get("day")
         month = request.GET.get("month")
         year = request.GET.get("year")
-        print(day)
-        print(month)
-        print(year)
         access_control = AccessControl.objects.filter(employee_id=obj.pk, created__day=day, created__month=month, created__year=year)
-        print(access_control)
         if access_control:
             access_control = access_control.last()
             return access_control.status
