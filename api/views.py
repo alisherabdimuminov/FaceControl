@@ -24,9 +24,9 @@ def check_location(request: HttpRequest):
     for area in areas:
         coordinates = []
         for coord in area.coordinates.all():
-            coordinates.append((coord.longitude, coord.latitude))
+            coordinates.append((coord.latitude, coord.longitude))
         polygon = Polygon(coordinates)
-        point = Point((longitude, latitude))
+        point = Point((latitude, longitude))
         point_in_the_area = polygon.contains(point)
         print(polygon)
         print(point)
