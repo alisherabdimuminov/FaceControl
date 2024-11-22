@@ -47,7 +47,7 @@ def check_location(request: HttpRequest):
 @decorators.api_view(http_method_names=["POST"])
 def check_passport(request: HttpRequest):
     passport = request.data.get("passport", "").lower()
-    employee = Employee.objects.filter(passport_number__icontains=passport)
+    employee = Employee.objects.filter(handle__icontains=passport)
     if employee:
         employee = employee.first()
         return Response({
