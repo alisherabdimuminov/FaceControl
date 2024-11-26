@@ -51,6 +51,7 @@ class AreaModelSerializer(serializers.ModelSerializer):
 
 class AttendancesModelSerializer(serializers.ModelSerializer):
     requires_context = True
+    department = DepartmentModelSerializer(Department, many=False)
     attendance_access = serializers.SerializerMethodField("attendance_access_func")
     attendance_access_time = serializers.SerializerMethodField("attendance_access_time_func")
     attendance_access_area = serializers.SerializerMethodField("attendance_access_area_func")
@@ -115,7 +116,7 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
     class Meta:
         model = Employee
         fields = (
-            "uuid", "full_name",
+            "uuid", "full_name", "department",
             "attendance_access", "attendance_access_time",
             "attendance_access_area", "attendance_output",
             "attendance_output_time",
