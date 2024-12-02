@@ -96,7 +96,7 @@ def faceid(request: HttpRequest):
                 )
                 print(result)
                 if result.get("verified"):
-                    if now.hour >= 9 and now.minute <= 30:
+                    if now.hour >= 9:
                         control.status = "late"
                     else:
                         control.status = "arrived"
