@@ -74,7 +74,7 @@ def faceid(request: HttpRequest):
     if employee:
         employee = employee.first()
         print(now)
-        if (now.hour) < 15:
+        if (now.hour) < 9 and now.minute <= 30:
             control = AccessControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
             if control:
                 return Response({
