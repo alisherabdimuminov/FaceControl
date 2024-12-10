@@ -308,3 +308,21 @@ def attendance_view(request: HttpRequest):
         "code": "200",
         "data": attendance.data
     })
+
+
+
+@decorators.api_view(http_method_names=["GET"])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+def reports(request: HttpRequest):
+    now = datetime.now()
+    department = request.GET.get("department") or 1
+    start_day = request.GET.get("start_day")
+    start_month = request.GET.get("start_month")
+    start_year = request.GET.get("start_year")
+    end_day = request.GET.get("end_day")
+    end_month = request.GET.get("end_month")
+    end_year = request.GET.get("end_year")
+
+    
+
+    return Response
