@@ -390,7 +390,7 @@ def reports_as_xlsx(request: HttpRequest):
     for e in employees_obj:
         k = []
         for r in response:
-            k.append(8 if response[r][counter].get("attendance_access") == 'arrived' or response[r][counter].get("attendance_access") == 'late'  else 0)
+            k.append(7 if response[r][counter].get("attendance_access") == 'arrived' or response[r][counter].get("attendance_access") == 'late'  else 0)
         data.append([f"{e.full_name}", ] + k)
         counter += 1
 
@@ -408,7 +408,7 @@ def reports_as_xlsx(request: HttpRequest):
     file_stream = BytesIO()
     wb.save(file_stream)
     response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-    response['Content-Disposition'] = 'attachment; filename="attendance.xlsx"'
+    response['Content-Disposition'] = f'attachment; filename="{department.name}.xlsx"'
     response.write(file_stream.getvalue())
     return response
 
