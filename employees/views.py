@@ -390,7 +390,7 @@ def reports_as_xlsx(request: HttpRequest):
     for e in employees_obj:
         k = []
         for r in response:
-            k.append(8 if response[r][counter].get("attendance_access") == 'arrived' else 0)
+            k.append(8 if response[r][counter].get("attendance_access") == 'arrived' or response[r][counter].get("attendance_access") == 'late'  else 0)
         data.append([f"{e.full_name}", ] + k)
         counter += 1
 
