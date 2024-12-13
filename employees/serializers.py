@@ -121,3 +121,75 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
             "attendance_access_area", "attendance_output",
             "attendance_output_time",
         )
+
+
+class AttendancesSerializer(serializers.ModelSerializer):
+    requires_context = True
+    attendance_access = serializers.SerializerMethodField("attendance_access_func")
+    # attendance_access_time = serializers.SerializerMethodField("attendance_access_time_func")
+    # attendance_access_area = serializers.SerializerMethodField("attendance_access_area_func")
+    # attendance_output = serializers.SerializerMethodField("attendance_output_func")
+    # attendance_output_time = serializers.SerializerMethodField("attendance_output_time_func")
+
+    def attendance_access_func(self, obj):
+        request = self.context.get("date")
+        day = request.get("day")
+        month = request.get("month")
+        year = request.get("year")
+        access_control = AccessControl.objects.filter(employee_id=obj.pk, created__day=day, created__month=month, created__year=year)
+        if access_control:
+            access_control = access_control.last()
+            return access_control.status
+        return "did_not_come"
+
+    def attendance_access_time_func(self, obj):
+        request = self.context.get("date")
+        day = request.get("day")
+        month = request.get("month")
+        year = request.get("year")
+        access_control = AccessControl.objects.filter(employee=obj, created__day=day, created__month=month, created__year=year)
+        if access_control:
+            access_control = access_control.last()
+            return access_control.created.astimezone(ZoneInfo("Asia/Tashkent")).strftime("%H:%M")
+        return "-:-"
+    
+    def attendance_access_area_func(self, obj):
+        request = self.context.get("date")
+        day = request.get("day")
+        month = request.get("month")
+        year = request.get("year")
+        access_control = AccessControl.objects.filter(employee=obj, created__day=day, created__month=month, created__year=year)
+        if access_control:
+            access_control = access_control.last()
+            return access_control.area.name
+        return "Noma'lum"
+    
+    def attendance_output_func(self, obj):
+        request = self.context.get("date")
+        day = request.get("day")
+        month = request.get("month")
+        year = request.get("year")
+        output_control = OutputControl.objects.filter(employee=obj, created__day=day, created__month=month, created__year=year)
+        if output_control:
+            output_control = output_control.last()
+            return output_control.status
+        return "at_work"
+    
+    def attendance_output_time_func(self, obj):
+        request = self.context.get("date")
+        day = request.get("day")
+        month = request.get("month")
+        year = request.get("year")
+        output_control = OutputControl.objects.filter(employee=obj, created__day=day, created__month=month, created__year=year)
+        if output_control:
+            output_control = output_control.last()
+            return output_control.created.astimezone(ZoneInfo("Asia/Tashkent")).strftime("%H:%M")
+        return "-:-"
+
+    class Meta:
+        model = Employee
+        fields = (
+            "uuid", "full_name",
+            "attendance_access", 
+        )
+

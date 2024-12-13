@@ -2,7 +2,7 @@
 import base64
 from datetime import datetime
 from shapely.geometry import Polygon, Point
-from deepface import DeepFace
+# from deepface import DeepFace
 
 from django.http import HttpRequest
 from rest_framework import decorators

@@ -1,7 +1,9 @@
 import base64
+from io import BytesIO
+from openpyxl import Workbook
 from datetime import datetime, timedelta
 
-from django.http import HttpRequest
+from django.http import HttpRequest, HttpResponse
 from rest_framework.response import Response
 from rest_framework import decorators
 from rest_framework import permissions
@@ -23,6 +25,7 @@ from .serializers import (
     DepartmentModelSerializer,
     CreateEmployeeModelSerializer,
     AttendancesModelSerializer,
+    AttendancesSerializer,
 )
 
 
@@ -292,7 +295,7 @@ def delete_area_view(request: HttpRequest):
 @decorators.api_view(http_method_names=["GET"])
 @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def attendance_view(request: HttpRequest):
-    department_pk = int(request.GET.get("department", 0))
+    department_pk = int(request.GET.get("department", 1))
     if department_pk > 0:
         employees_obj = Employee.objects.filter(department_id=department_pk, active=True)
         attendance = AttendancesModelSerializer(employees_obj, many=True, context={ "request": request })
@@ -311,9 +314,44 @@ def attendance_view(request: HttpRequest):
 
 
 
-@decorators.api_view(http_method_names=["GET"])
-@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.api_view(http_method_names=["POST"])
+# @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def reports(request: HttpRequest):
+    now = datetime.now()
+    department = request.data.get("department") or 1
+    start_day = request.data.get("start_day")
+    start_month = request.data.get("start_month")
+    start_year = request.data.get("start_year")
+    end_day = request.data.get("end_day")
+    end_month = request.data.get("end_month")
+    end_year = request.data.get("end_year")
+
+    employees_obj = Employee.objects.filter(department_id=department, active=True)
+
+    start_date = datetime.strptime(f"{start_day}-{start_month}-{start_year}", "%d-%m-%Y")
+    end_date = datetime.strptime(f"{end_day}-{end_month}-{end_year}", "%d-%m-%Y")
+
+    date_range = [(start_date + timedelta(days=i)).strftime("%d-%m-%Y") 
+                  for i in range((end_date - start_date).days + 1)]
+    print(date_range)
+
+    response = {}
+
+    for date in date_range:
+        day, month, year = date.split("-")
+        report = AttendancesSerializer(employees_obj, many=True, context={ "date": { "day": day, "month": month, "year": year } })
+        response[date] = report.data
+
+    return Response({
+        "status": "success",
+        "code": "200",
+        "data": response
+    })
+
+
+@decorators.api_view(http_method_names=["GET"])
+# @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+def reports_as_xlsx(request: HttpRequest):
     now = datetime.now()
     department = request.GET.get("department") or 1
     start_day = request.GET.get("start_day")
@@ -323,6 +361,54 @@ def reports(request: HttpRequest):
     end_month = request.GET.get("end_month")
     end_year = request.GET.get("end_year")
 
-    
+    employees_obj = Employee.objects.filter(department_id=department, active=True)
+    department = Department.objects.get(pk=department)
 
-    return Response
+    start_date = datetime.strptime(f"{start_day}-{start_month}-{start_year}", "%d-%m-%Y")
+    end_date = datetime.strptime(f"{end_day}-{end_month}-{end_year}", "%d-%m-%Y")
+
+    date_range = [(start_date + timedelta(days=i)).strftime("%d-%m-%Y") 
+                  for i in range((end_date - start_date).days + 1)]
+    print(date_range)
+
+    wb = Workbook()
+    ws = wb.active
+
+    ws.title = department.name
+
+    data = []
+    data.append(["Familiya Ism Sharifi", ] + date_range + ["Jami"])
+
+    response = {}
+
+    for date in date_range:
+        day, month, year = date.split("-")
+        report = AttendancesSerializer(employees_obj, many=True, context={ "date": { "day": day, "month": month, "year": year } })
+        response[date] = report.data
+
+    counter = 0
+    for e in employees_obj:
+        k = []
+        for r in response:
+            k.append(8 if response[r][counter].get("attendance_access") == 'arrived' else 0)
+        data.append([f"{e.full_name}", ] + k)
+        counter += 1
+
+    print(data)
+
+    ws.append(data[0])
+
+    for i, row in enumerate(data[1:], start=2):
+        print("row", row)
+        row.append(sum(row[1::]))
+        ws.append(row)
+        # last_data_column = len(data[0]) - 2
+        # ws[f"{chr(65 + last_data_column + 1)}{i}"] = f"=SUM(B{i}:{chr(65 + last_data_column)}{i})"
+
+    file_stream = BytesIO()
+    wb.save(file_stream)
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = 'attachment; filename="attendance.xlsx"'
+    response.write(file_stream.getvalue())
+    return response
+

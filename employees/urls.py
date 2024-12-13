@@ -14,6 +14,8 @@ from .views import (
     add_department_view,
     employees_birth_date_view,
     attendance_view,
+    reports,
+    reports_as_xlsx,
 )
 
 
@@ -34,4 +36,6 @@ urlpatterns = [
     path("departments/department/<int:pk>/edit/", edit_department_view, name="edit_department"),
 
     path("attendance/", attendance_view, name="attendance"),
+    path("reports/", reports, name="reports"),
+    path("reports/xlsx/", reports_as_xlsx, name="reports_as_xlsx"),
 ]
