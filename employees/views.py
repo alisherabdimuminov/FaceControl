@@ -377,7 +377,7 @@ def reports_as_xlsx(request: HttpRequest):
     ws.title = department.name
 
     data = []
-    data.append(["Familiya Ism Sharifi", ] + date_range + ["Jami"])
+    data.append(["Familiya Ism Sharifi", ] + date_range)
 
     response = {}
 
@@ -390,7 +390,7 @@ def reports_as_xlsx(request: HttpRequest):
     for e in employees_obj:
         k = []
         for r in response:
-            k.append(7 if response[r][counter].get("attendance_access") == 'arrived' or response[r][counter].get("attendance_access") == 'late'  else 0)
+            k.append(response[r][counter].get("attendance_access_time"))
         data.append([f"{e.full_name}", ] + k)
         counter += 1
 
@@ -399,8 +399,6 @@ def reports_as_xlsx(request: HttpRequest):
     ws.append(data[0])
 
     for i, row in enumerate(data[1:], start=2):
-        print("row", row)
-        row.append(sum(row[1::]))
         ws.append(row)
         # last_data_column = len(data[0]) - 2
         # ws[f"{chr(65 + last_data_column + 1)}{i}"] = f"=SUM(B{i}:{chr(65 + last_data_column)}{i})"
