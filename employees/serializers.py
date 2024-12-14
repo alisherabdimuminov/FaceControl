@@ -190,6 +190,7 @@ class AttendancesSerializer(serializers.ModelSerializer):
         model = Employee
         fields = (
             "uuid", "full_name",
-            "attendance_access", 
+            "attendance_access",
+            "attendance_access_time" 
         )
 
