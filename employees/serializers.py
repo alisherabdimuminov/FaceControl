@@ -126,7 +126,7 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
 class AttendancesSerializer(serializers.ModelSerializer):
     requires_context = True
     attendance_access = serializers.SerializerMethodField("attendance_access_func")
-    # attendance_access_time = serializers.SerializerMethodField("attendance_access_time_func")
+    attendance_access_time = serializers.SerializerMethodField("attendance_access_time_func")
     # attendance_access_area = serializers.SerializerMethodField("attendance_access_area_func")
     # attendance_output = serializers.SerializerMethodField("attendance_output_func")
     # attendance_output_time = serializers.SerializerMethodField("attendance_output_time_func")
