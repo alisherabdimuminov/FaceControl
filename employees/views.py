@@ -49,7 +49,7 @@ def employees_view(request: HttpRequest):
 
 
 @decorators.api_view(http_method_names=["GET"])
-# @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def employees_birth_date_view(request: HttpRequest):
     now = datetime.now()
     # Current date
