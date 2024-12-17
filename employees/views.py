@@ -35,11 +35,11 @@ from .serializers import (
 def employees_view(request: HttpRequest):
     department_pk = request.GET.get("department") or 0
     if department_pk == 0 or department_pk == "0":
-        employees_obj = Employee.objects.filter(active=True)
+        employees_obj = Employee.objects.filter(active=True).order_by("full_name")
         employees = EmployeeModelSerializer(employees_obj, many=True)
     else:
         department = Department.objects.get(pk=department_pk)
-        employees_obj = Employee.objects.filter(active=True, department=department)
+        employees_obj = Employee.objects.filter(active=True, department=department).order_by("full_name")
         employees = EmployeeModelSerializer(employees_obj, many=True)
     return Response({
         "status": "success",
@@ -309,7 +309,7 @@ def reports(request: HttpRequest):
     end_month = request.data.get("end_month")
     end_year = request.data.get("end_year")
 
-    employees_obj = Employee.objects.filter(department_id=department, active=True)
+    employees_obj = Employee.objects.filter(department_id=department, active=True).order_by("full_name")
 
     start_date = datetime.strptime(f"{start_day}-{start_month}-{start_year}", "%d-%m-%Y")
     end_date = datetime.strptime(f"{end_day}-{end_month}-{end_year}", "%d-%m-%Y")
@@ -343,7 +343,7 @@ def reports_as_xlsx(request: HttpRequest):
     end_month = request.GET.get("end_month")
     end_year = request.GET.get("end_year")
 
-    employees_obj = Employee.objects.filter(department_id=department, active=True)
+    employees_obj = Employee.objects.filter(department_id=department, active=True).order_by("full_name")
     department = Department.objects.get(pk=department)
 
     start_date = datetime.strptime(f"{start_day}-{start_month}-{start_year}", "%d-%m-%Y")
