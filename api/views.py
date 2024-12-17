@@ -73,9 +73,7 @@ def faceid(request: HttpRequest):
     base64image = ContentFile(base64.b64decode(imgstr), name=f"taken.{ext}")
     if employee:
         employee = employee.first()
-        print(now)
-        print((now.hour) < 12)
-        if (now.hour) < 21:
+        if (now.hour) < 12 and employee.working_time != "0.5":
             control = AccessControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
             if control:
                 return Response({
