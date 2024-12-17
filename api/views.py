@@ -75,7 +75,7 @@ def faceid(request: HttpRequest):
         employee = employee.first()
         print(now)
         print((now.hour) < 12)
-        if (now.hour) < 12:
+        if (now.hour) < 21:
             control = AccessControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
             if control:
                 return Response({
@@ -115,15 +115,22 @@ def faceid(request: HttpRequest):
                         else:
                             control.status = "arrived"
                     control.save()
+                    return Response({
+                        "status": "success",
+                        "code": "200",
+                        "data": result.get("verified")
+                    })
                 else:
                     control.status = "failed"
                     control.save()
-                return Response({
-                    "status": "success",
-                    "code": "200",
-                    "data": result.get("verified")
-                })
+                    return Response({
+                        "status": "error",
+                        "code": "402",
+                        "data": result.get("verified")
+                    })
             except:
+                control.status = "failed"
+                control.save()
                 return Response({
                     "status": "error",
                     "code": "400",
@@ -164,16 +171,23 @@ def faceid(request: HttpRequest):
                         })
                     control.status = "gone"
                     control.save()
+                    return Response({
+                        "status": "success",
+                        "code": "200",
+                        "data": result.get("verified")
+                    })
                 else:
                     control.status = "failed"
                     control.save()
-                return Response({
-                    "status": "success",
-                    "code": "200",
-                    "data": result.get("verified")
-                })
+                    return Response({
+                        "status": "error",
+                        "code": "402",
+                        "data": result.get("verified")
+                    })
             except Exception as e:
                 print(e)
+                control.status = "failed"
+                control.save()
                 return Response({
                     "status": "error",
                     "code": "400",
