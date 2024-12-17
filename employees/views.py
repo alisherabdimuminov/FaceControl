@@ -280,14 +280,14 @@ def delete_area_view(request: HttpRequest):
 def attendance_view(request: HttpRequest):
     department_pk = int(request.GET.get("department", 1))
     if department_pk > 0:
-        employees_obj = Employee.objects.filter(department_id=department_pk, active=True)
+        employees_obj = Employee.objects.filter(department_id=department_pk, active=True).order_by("full_name")
         attendance = AttendancesModelSerializer(employees_obj, many=True, context={ "request": request })
         return Response({
             "status": "success",
             "code": "200",
             "data": attendance.data
         })
-    employees_obj = Employee.objects.filter(active=True)
+    employees_obj = Employee.objects.filter(active=True).order_by("full_name")
     attendance = AttendancesModelSerializer(employees_obj, many=True, context={ "request": request })
     return Response({
         "status": "success",
