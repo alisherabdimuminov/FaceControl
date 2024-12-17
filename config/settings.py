@@ -94,10 +94,10 @@ AUTH_USER_MODEL = "users.User"
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
-CSRF_TRUSTED_ORIGINS = ["https://api.fc.uzfi.uz", "http://localhost:8000"]
-SESSION_COOKIE_DOMAIN = ".fc.uzfi.uz"
-CSRF_COOKIE_DOMAIN = ".fc.uzfi.uz"
-CSRF_COOKIE_SECURE = True
+# CSRF_TRUSTED_ORIGINS = ["https://api.fc.uzfi.uz", "http://localhost:8000"]
+# SESSION_COOKIE_DOMAIN = ".fc.uzfi.uz"
+# CSRF_COOKIE_DOMAIN = ".fc.uzfi.uz"
+# CSRF_COOKIE_SECURE = True
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ["rest_framework.authentication.TokenAuthentication", ],

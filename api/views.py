@@ -74,6 +74,7 @@ def faceid(request: HttpRequest):
     if employee:
         employee = employee.first()
         print(now)
+        print((now.hour) < 12)
         if (now.hour) < 12:
             control = AccessControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
             if control:
@@ -94,8 +95,18 @@ def faceid(request: HttpRequest):
                     img1_path=employee.image.path,
                     img2_path=control.image.path,
                 )
+                anti_spoofing = DeepFace.extract_faces(
+                    img_path=control.image.path,
+                    anti_spoofing=True
+                )
                 print(result)
                 if result.get("verified"):
+                    if not anti_spoofing[0].get("is_real"):
+                        return Response({
+                            "status": "error",
+                            "code": "300",
+                            "data": None
+                        })
                     if now.hour >= 9:
                         control.status = "late"
                     else:
@@ -116,10 +127,10 @@ def faceid(request: HttpRequest):
                 return Response({
                     "status": "error",
                     "code": "400",
-                    "data": None
+                    "data": "None"
                 })
         else:
-            control = OutputControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
+            control = OutputControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="gone")
             if control:
                 return Response({
                     "status": "error",
@@ -138,9 +149,20 @@ def faceid(request: HttpRequest):
                     img1_path=employee.image.path,
                     img2_path=control.image.path
                 )
+                anti_spoofing = DeepFace.extract_faces(
+                    img_path=control.image.path,
+                    anti_spoofing=True
+                )
                 print(result)
+                print(anti_spoofing)
                 if result.get("verified"):
-                    control.status = "arrived"
+                    if not anti_spoofing[0].get("is_real"):
+                        return Response({
+                            "status": "error",
+                            "code": "300",
+                            "data": None
+                        })
+                    control.status = "gone"
                     control.save()
                 else:
                     control.status = "failed"
@@ -150,11 +172,12 @@ def faceid(request: HttpRequest):
                     "code": "200",
                     "data": result.get("verified")
                 })
-            except:
+            except Exception as e:
+                print(e)
                 return Response({
                     "status": "error",
                     "code": "400",
-                    "data": None
+                    "data": "none"
                 })
     return Response({
         "status": "error",
