@@ -67,6 +67,7 @@ def faceid(request: HttpRequest):
     now = datetime.now()
     base64data = request.data.get("image")
     passport = request.data.get("passport", "").lower()
+    area = request.data.get("area")
     employee = Employee.objects.filter(handle__icontains=passport)
     format, imgstr = base64data.split(';base64,')
     ext = format.split('/')[-1]
