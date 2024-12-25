@@ -7,8 +7,8 @@ from .models import History, User
 
 @admin.register(User)
 class UserModelAdmin(UserAdmin):
-    add_form = UserCreationModeForm
-    form = UserChangeModelForm
+    add_form = UserCreationForm
+    form = UserChangeForm
     list_display = ["username", "first_name", "last_name"]
     model = User
     fieldsets = (
