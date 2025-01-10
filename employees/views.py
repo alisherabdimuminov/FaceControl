@@ -17,6 +17,7 @@ from .models import (
     Area,
     Employee,
     Department,
+    AccessControl,
 )
 from .serializers import (
     CoordinateModelSerializer,
@@ -298,7 +299,7 @@ def attendance_view(request: HttpRequest):
 
 
 @decorators.api_view(http_method_names=["POST"])
-# @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def reports(request: HttpRequest):
     now = datetime.now()
     department = request.data.get("department") or 1
@@ -332,7 +333,7 @@ def reports(request: HttpRequest):
 
 
 @decorators.api_view(http_method_names=["GET"])
-# @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def reports_as_xlsx(request: HttpRequest):
     now = datetime.now()
     department = request.GET.get("department") or 1
@@ -390,3 +391,25 @@ def reports_as_xlsx(request: HttpRequest):
     response.write(file_stream.getvalue())
     return response
 
+
+@decorators.api_view(http_method_names=["GET"])
+def statistics(request: HttpRequest):
+    now = datetime.now()
+    departments = Department.objects.filter(active=True)
+    data = []
+    for department in departments:
+        employees_obj = Employee.objects.filter(department=department)
+        access_arrived_obj = AccessControl.objects.filter(employee__department=department, created__year=now.year, created__month=now.month, created__day=now.day, status="arrived")
+        access_late_obj = AccessControl.objects.filter(employee__department=department, created=now, status="late")
+        data.append({
+            "department": department.name,
+            "all": employees_obj.count(),
+            "arrived": access_arrived_obj.count(),
+            "late": access_late_obj.count(),
+            "didnotcome": employees_obj.count() - (access_arrived_obj.count() + access_late_obj.count()),
+        })
+    return Response({
+        "status": "success",
+        "code": "200",
+        "data": data
+    })
