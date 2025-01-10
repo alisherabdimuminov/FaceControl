@@ -400,7 +400,7 @@ def statistics(request: HttpRequest):
     for department in departments:
         employees_obj = Employee.objects.filter(department=department)
         access_arrived_obj = AccessControl.objects.filter(employee__department=department, created__year=now.year, created__month=now.month, created__day=now.day, status="arrived")
-        access_late_obj = AccessControl.objects.filter(employee__department=department, created=now, status="late")
+        access_late_obj = AccessControl.objects.filter(employee__department=department, created__year=now.year, created__month=now.month, created__day=now.day, status="late")
         data.append({
             "department": department.name,
             "all": employees_obj.count(),
