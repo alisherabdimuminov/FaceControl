@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 from rest_framework import serializers
 
@@ -14,6 +14,7 @@ from .models import (
 
 class DepartmentModelSerializer(serializers.ModelSerializer):
     employees = serializers.SerializerMethodField("count_employees")
+    id = serializers.CharField()
     def count_employees(self, obj):
         return Employee.objects.filter(department=obj.pk, active=True).count()
     class Meta:
@@ -144,10 +145,13 @@ class AttendancesSerializer(serializers.ModelSerializer):
         day = request.get("day")
         month = request.get("month")
         year = request.get("year")
+        date = datetime(int(year), int(month), int(day))
         access_control = AccessControl.objects.filter(employee=obj, created__day=day, created__month=month, created__year=year)
         if access_control:
             access_control = access_control.last()
             return access_control.created.astimezone(ZoneInfo("Asia/Tashkent")).strftime("%H:%M")
+        if date.weekday() == 0:
+            return "x"
         return "-:-"
     
     def attendance_access_area_func(self, obj):
