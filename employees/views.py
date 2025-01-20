@@ -333,7 +333,7 @@ def reports(request: HttpRequest):
 
 
 @decorators.api_view(http_method_names=["GET"])
-@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
+# @decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
 def reports_as_xlsx(request: HttpRequest):
     now = datetime.now()
     department = request.GET.get("department") or 1
