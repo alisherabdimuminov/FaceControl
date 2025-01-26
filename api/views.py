@@ -8,6 +8,7 @@ from django.http import HttpRequest
 from rest_framework import decorators
 from rest_framework.response import Response
 from django.core.files.base import ContentFile
+from django.db.models import Q
 
 from employees.models import Area, Employee, AccessControl, OutputControl
 
@@ -74,8 +75,9 @@ def faceid(request: HttpRequest):
     base64image = ContentFile(base64.b64decode(imgstr), name=f"taken.{ext}")
     if employee:
         employee = employee.first()
-        if (now.hour) < 12 and employee.working_time != "0.5":
-            control = AccessControl.objects.filter(employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year, status="arrived")
+        if (now.hour) < 12:
+            control = AccessControl.objects.filter(Q(status="arrived") | Q(status="late"), employee=employee.pk, created__day=now.day, created__month=now.month, created__year=now.year)
+            print(control)
             if control:
                 return Response({
                     "status": "error",
