@@ -75,9 +75,9 @@ class AccessControl(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=ACCESS_STATUS)
-    latitude = models.CharField(max_length=200)
-    longitude = models.CharField(max_length=200)
-    image = models.ImageField()
+    latitude = models.CharField(max_length=200, null=True, blank=True)
+    longitude = models.CharField(max_length=200, null=True, blank=True)
+    image = models.ImageField(upload_to="image/access_control", null=True, blank=True)
 
     active = models.BooleanField(default=True)
 
@@ -92,9 +92,9 @@ class OutputControl(models.Model):
     employee = models.ForeignKey(Employee, on_delete=models.CASCADE)
     area = models.ForeignKey(Area, on_delete=models.CASCADE)
     status = models.CharField(max_length=20, choices=OUTPUT_STATUS)
-    latitude = models.CharField(max_length=20)
-    longitude = models.CharField(max_length=20)
-    image = models.ImageField()
+    latitude = models.CharField(max_length=20, null=True, blank=True)
+    longitude = models.CharField(max_length=20, null=True, blank=True)
+    image = models.ImageField(upload_to="image/output_control", null=True, blank=True)
 
     active = models.BooleanField(default=True)
 

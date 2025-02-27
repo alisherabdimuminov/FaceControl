@@ -67,9 +67,15 @@ def check_passport(request: HttpRequest):
 def faceid(request: HttpRequest):
     now = datetime.now()
     base64data = request.data.get("image")
-    passport = request.data.get("passport", "").lower()
+    passport = request.data.get("passport", "").upper()
     area = request.data.get("area")
-    employee = Employee.objects.filter(handle__icontains=passport)
+    if not passport:
+        return Response({
+            "status": "success",
+            "code": "404",
+            "data": None
+        })
+    employee = Employee.objects.filter(handle=passport)
     format, imgstr = base64data.split(';base64,')
     ext = format.split('/')[-1]
     base64image = ContentFile(base64.b64decode(imgstr), name=f"taken.{ext}")
@@ -103,6 +109,8 @@ def faceid(request: HttpRequest):
                 print(result)
                 if result.get("verified"):
                     if not anti_spoofing[0].get("is_real"):
+                        control.status = "failed"
+                        control.save()
                         return Response({
                             "status": "error",
                             "code": "300",
@@ -164,12 +172,6 @@ def faceid(request: HttpRequest):
                 print(result)
                 print(anti_spoofing)
                 if result.get("verified"):
-                    if not anti_spoofing[0].get("is_real"):
-                        return Response({
-                            "status": "error",
-                            "code": "300",
-                            "data": None
-                        })
                     control.status = "gone"
                     control.save()
                     return Response({
