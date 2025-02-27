@@ -62,7 +62,7 @@ class Employee(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     position = models.CharField(max_length=1000)
     gender = models.CharField(max_length=100, choices=GENDER)
-    working_time = models.ForeignKey(WorkTime, on_delete=models.SET_NULL, null=True, blank=True)
+    working_time = models.ForeignKey(WorkTime, on_delete=models.SET_NULL, default=None, null=True, blank=True)
     birth_date = models.DateField(max_length=100, null=True, blank=True)
     image = models.ImageField(upload_to="images/employees", null=True, blank=True)
 
