@@ -18,6 +18,16 @@ OUTPUT_STATUS = (
     ("failed", "Failed"),
 )
 
+
+class WorkTime(models.Model):
+    name = models.CharField(max_length=100)
+    start = models.TimeField()
+    end = models.TimeField()
+
+    def __str__(self):
+        return self.name
+
+
 class Coordinate(models.Model):
     latitude = models.CharField(max_length=20)
     longitude = models.CharField(max_length=20)
@@ -52,7 +62,7 @@ class Employee(models.Model):
     department = models.ForeignKey(Department, on_delete=models.SET_NULL, null=True, blank=True)
     position = models.CharField(max_length=1000)
     gender = models.CharField(max_length=100, choices=GENDER)
-    working_time = models.CharField(max_length=110)
+    working_time = models.ForeignKey(WorkTime, on_delete=models.SET_NULL, null=True, blank=True)
     birth_date = models.DateField(max_length=100, null=True, blank=True)
     image = models.ImageField(upload_to="images/employees", null=True, blank=True)
 

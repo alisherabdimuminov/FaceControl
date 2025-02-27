@@ -9,7 +9,14 @@ from .models import (
     Department,
     AccessControl,
     OutputControl,
+    WorkTime,
 )
+
+
+class WorkTimeModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = WorkTime
+        fields = ("name", "start", "end", )
 
 
 class DepartmentModelSerializer(serializers.ModelSerializer):
@@ -24,6 +31,7 @@ class DepartmentModelSerializer(serializers.ModelSerializer):
     
 class EmployeeModelSerializer(serializers.ModelSerializer):
     department = DepartmentModelSerializer(Department, many=False)
+    working_time = WorkTimeModelSerializer(WorkTime, many=False)
     class Meta:
         model = Employee
         fields = ("uuid", "handle", "full_name", "department", "position", "gender", "working_time", "birth_date", "image", "country", "city", "town", "address", "phone", )
