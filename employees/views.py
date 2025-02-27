@@ -18,7 +18,6 @@ from .models import (
     Employee,
     Department,
     AccessControl,
-    WorkTime,
 )
 from .serializers import (
     CoordinateModelSerializer,
@@ -28,20 +27,7 @@ from .serializers import (
     CreateEmployeeModelSerializer,
     AttendancesModelSerializer,
     AttendancesSerializer,
-    WorkTimeModelSerializer,
 )
-
-
-@decorators.api_view(http_method_names=["GET"])
-@decorators.permission_classes(permission_classes=[permissions.IsAuthenticated])
-def work_times_view(request: HttpRequest):
-    work_times_obj = WorkTime.objects.all()
-    work_times = WorkTimeModelSerializer(work_times_obj, many=True)
-    return Response({
-        "status": "success",
-        "code": "200",
-        "data": work_times.data
-    })
 
 
 # Employee

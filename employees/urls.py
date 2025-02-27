@@ -17,7 +17,6 @@ from .views import (
     reports,
     reports_as_xlsx,
     statistics,
-    work_times_view,
 )
 
 
@@ -41,5 +40,4 @@ urlpatterns = [
     path("reports/", reports, name="reports"),
     path("reports/xlsx/", reports_as_xlsx, name="reports_as_xlsx"),
     path("statistics/", statistics, name="statistics"),
-    path("work_times/", work_times_view, name="work_times"),
 ]
