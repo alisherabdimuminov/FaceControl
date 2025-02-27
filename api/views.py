@@ -24,7 +24,7 @@ def make_word(request: HttpRequest):
     return Response({
         "status": "success",
         "code": "200",
-        "data": request.build_absolute_uri("media/generated_doc.docx")
+        "data": "https://api.fc.uzfi.uz/media/generated_doc.docx"
     })
 
 
