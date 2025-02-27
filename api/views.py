@@ -17,7 +17,7 @@ from employees.models import Area, Employee, AccessControl, OutputControl
 @decorators.api_view(http_method_names=["POST"])
 def make_word(request: HttpRequest):
     data = request.data.get("data")
-    doc = DocxTemplate("my_word_template.docx")
+    doc = DocxTemplate("example.docx")
     context = { 'users' : data }
     doc.render(context)
     doc.save("media/generated_doc.docx")
