@@ -3,6 +3,7 @@ import base64
 from datetime import datetime
 from shapely.geometry import Polygon, Point
 from deepface import DeepFace
+from docxtpl import DocxTemplate
 
 from django.http import HttpRequest
 from rest_framework import decorators
@@ -11,6 +12,21 @@ from django.core.files.base import ContentFile
 from django.db.models import Q
 
 from employees.models import Area, Employee, AccessControl, OutputControl
+
+
+@decorators.api_view(http_method_names=["POST"])
+def make_word(request: HttpRequest):
+    data = request.data.get("data")
+    doc = DocxTemplate("my_word_template.docx")
+    context = { 'users' : data }
+    doc.render(context)
+    doc.save("media/generated_doc.docx")
+    return Response({
+        "status": "success",
+        "code": "200",
+        "data": request.build_absolute_uri("media/generated_doc.docx")
+    })
+
 
 
 @decorators.api_view(http_method_names=["POST"])

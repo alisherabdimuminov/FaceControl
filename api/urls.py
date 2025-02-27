@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import check_location, check_passport, faceid
+from .views import check_location, check_passport, faceid, make_word
 
 
 urlpatterns = [
@@ -10,4 +10,5 @@ urlpatterns = [
     path("location/", check_location, name="check_location"),
     path("passport/", check_passport, name="check_passport"),
     path("faceid/", faceid, name="faceid"),
+    path("make_word/", make_word, name="make_word"),
 ]
