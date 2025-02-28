@@ -83,7 +83,7 @@ def check_passport(request: HttpRequest):
 def faceid(request: HttpRequest):
     now = datetime.now()
     base64data = request.data.get("image")
-    passport = request.data.get("passport", "").upper()
+    passport = request.data.get("passport", "").lower()
     area = request.data.get("area")
     if not passport:
         return Response({
@@ -91,7 +91,7 @@ def faceid(request: HttpRequest):
             "code": "404",
             "data": None
         })
-    employee = Employee.objects.filter(handle=passport)
+    employee = Employee.objects.filter(handle__icontains=passport)
     format, imgstr = base64data.split(';base64,')
     ext = format.split('/')[-1]
     base64image = ContentFile(base64.b64decode(imgstr), name=f"taken.{ext}")
