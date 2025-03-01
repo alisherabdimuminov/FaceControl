@@ -64,7 +64,7 @@ class AttendancesModelSerializer(serializers.ModelSerializer):
         month = request.GET.get("month")
         year = request.GET.get("year")
         access_control = AccessControl.objects.filter(employee_id=obj.pk, created__day=day, created__month=month, created__year=year)
-        print("Xodim", obj.full_name, obj.pk, access_control)
+        # print("Xodim", obj.full_name, obj.pk, access_control)
         if access_control:
             access_control = access_control.last()
             return access_control.status
@@ -135,7 +135,7 @@ class AttendancesSerializer(serializers.ModelSerializer):
         month = request.get("month")
         year = request.get("year")
         access_control = AccessControl.objects.filter(employee_id=obj.pk, created__day=day, created__month=month, created__year=year)
-        print(access_control)
+        # print(access_control)
         if access_control:
             access_control = access_control.last()
             return access_control.status
