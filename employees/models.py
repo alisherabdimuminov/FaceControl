@@ -86,7 +86,7 @@ class AccessControl(models.Model):
     updated = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.status
+        return f"{self.status} - {self.employee.full_name} - {self.created}"
 
 
 class OutputControl(models.Model):
